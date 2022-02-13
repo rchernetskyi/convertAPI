@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 
 @Service
@@ -19,7 +21,10 @@ public class ConversionService {
 
     public File convert(MultipartFile multipartFile, String format) throws IOException {
         File initialFile = new File("C:\\Users\\romac\\Desktop\\Лаби\\convertAPI\\src\\main\\resources\\tmp\\file.tmp");
-        multipartFile.transferTo(initialFile);
+
+        try (OutputStream os = new FileOutputStream(initialFile)) {
+            os.write(multipartFile.getBytes());
+        }
 
         String initialFormat = multipartFile.getOriginalFilename().replaceAll(".*\\.", "");
 
