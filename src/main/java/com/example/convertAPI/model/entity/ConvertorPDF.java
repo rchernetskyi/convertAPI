@@ -1,9 +1,11 @@
 package com.example.convertAPI.model.entity;
 
 import com.aspose.pdf.Document;
+import com.example.convertAPI.model.exceptions.InvalidFormatException;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class ConvertorPDF implements Convertor {
 
@@ -24,7 +26,8 @@ public class ConvertorPDF implements Convertor {
                 + initialFile.getName().replaceAll("\\..+", ".docx"));
 
         Document document = new Document(initialFile.getAbsolutePath());
-        document.save(convertedFile.getAbsolutePath(), formats.get(format));
+
+        document.save(convertedFile.getAbsolutePath(), Optional.ofNullable(formats.get(format)).orElseThrow(() -> new InvalidFormatException("final")));
 
         return convertedFile;
     }

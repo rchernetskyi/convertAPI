@@ -2,6 +2,7 @@ package com.example.convertAPI.model.services;
 
 import com.example.convertAPI.model.entity.Convertor;
 import com.example.convertAPI.model.entity.ConvertorPDF;
+import com.example.convertAPI.model.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 public class ConversionService {
@@ -28,7 +30,7 @@ public class ConversionService {
 
         String initialFormat = multipartFile.getOriginalFilename().replaceAll(".*\\.", "");
 
-        Convertor convertor = convertors.get(initialFormat);
+        Convertor convertor = Optional.ofNullable(convertors.get(initialFormat)).orElseThrow(() -> new InvalidFormatException("initial"));
 
         return convertor.convertTo(initialFile, format);
     }
