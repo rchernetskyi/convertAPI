@@ -1,6 +1,7 @@
 package com.example.convertAPI.controllers;
 
 import com.example.convertAPI.model.services.ConversionService;
+import com.example.convertAPI.model.services.UserRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -12,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
 import java.nio.file.Files;
 
 @RestController
@@ -22,9 +22,18 @@ public class ConvertController {
     @Autowired
     private ConversionService conversionService;
 
+    @Autowired
+    private UserRequestService userRequestService;
+
     @PostMapping("/convert")
-    public ResponseEntity<Resource> convert(@RequestParam("file") MultipartFile multipartFile, @RequestParam("format") String format) throws IOException {
-        File convertedFile = conversionService.convert(multipartFile, format);
+    public ResponseEntity<Resource> convert(@RequestParam("file") MultipartFile multipartFile
+            , @RequestParam("format") String finalFormat, HttpServletRequest request) throws IOException {
+        File initialFile = saveMultipartFile(multipartFile);
+        String initialFormat = multipartFile.getOriginalFilename().replaceAll(".*\\.", "");
+
+        File convertedFile = conversionService.convert(initialFile, initialFormat, finalFormat);
+
+        userRequestService.addUserRequest(initialFile, convertedFile, initialFormat, finalFormat, request);
 
         InputStreamResource resource = new InputStreamResource(new FileInputStream(convertedFile));
 
@@ -38,5 +47,14 @@ public class ConvertController {
                 .headers(headers)
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(resource);
+    }
+
+    private File saveMultipartFile(MultipartFile multipartFile) throws IOException {
+        File initialFile = new File("C:\\Users\\romac\\Desktop\\Лаби\\convertAPI\\src\\main\\resources\\tmp\\file.tmp");
+
+        try (OutputStream os = new FileOutputStream(initialFile)) {
+            os.write(multipartFile.getBytes());
+        }
+        return initialFile;
     }
 }

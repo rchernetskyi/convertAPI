@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @org.springframework.web.bind.annotation.ControllerAdvice
 public class ControllerAdvice {
-    @ExceptionHandler(InvalidFormatException.class)
+    @ExceptionHandler({InvalidFormatException.class, RuntimeException.class})
     public ResponseEntity<ExceptionResponse> handleInvalidFormat(Exception exception) {
         return new ResponseEntity<>(new ExceptionResponse(exception.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
     }

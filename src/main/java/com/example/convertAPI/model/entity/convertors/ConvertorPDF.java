@@ -1,4 +1,4 @@
-package com.example.convertAPI.model.entity;
+package com.example.convertAPI.model.entity.convertors;
 
 import com.aspose.pdf.Document;
 import com.example.convertAPI.model.exceptions.InvalidFormatException;
@@ -22,8 +22,8 @@ public class ConvertorPDF implements Convertor {
 
     @Override
     public File convertTo(File initialFile, String format) {
-        File convertedFile = new File("C:\\Users\\romac\\Desktop\\conversion\\src\\main\\java\\com\\conversion\\controllers\\tmp\\"
-                + initialFile.getName().replaceAll("\\..+", ".docx"));
+        File convertedFile = new File("C:\\Users\\romac\\Desktop\\Лаби\\convertAPI\\src\\main\\resources\\tmp\\"
+                + initialFile.getName().replaceAll("\\..+", "." + format));
 
         Document document = new Document(initialFile.getAbsolutePath());
 

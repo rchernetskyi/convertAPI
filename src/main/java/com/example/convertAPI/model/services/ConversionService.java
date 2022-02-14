@@ -1,7 +1,7 @@
 package com.example.convertAPI.model.services;
 
-import com.example.convertAPI.model.entity.Convertor;
-import com.example.convertAPI.model.entity.ConvertorPDF;
+import com.example.convertAPI.model.entity.convertors.Convertor;
+import com.example.convertAPI.model.entity.convertors.ConvertorPDF;
 import com.example.convertAPI.model.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,17 +21,9 @@ public class ConversionService {
         convertors.put("pdf", new ConvertorPDF());
     }
 
-    public File convert(MultipartFile multipartFile, String format) throws IOException {
-        File initialFile = new File("C:\\Users\\romac\\Desktop\\Лаби\\convertAPI\\src\\main\\resources\\tmp\\file.tmp");
-
-        try (OutputStream os = new FileOutputStream(initialFile)) {
-            os.write(multipartFile.getBytes());
-        }
-
-        String initialFormat = multipartFile.getOriginalFilename().replaceAll(".*\\.", "");
-
+    public File convert(File initialFile, String initialFormat, String finalFormat) {
         Convertor convertor = Optional.ofNullable(convertors.get(initialFormat)).orElseThrow(() -> new InvalidFormatException("initial"));
 
-        return convertor.convertTo(initialFile, format);
+        return convertor.convertTo(initialFile, finalFormat);
     }
 }
