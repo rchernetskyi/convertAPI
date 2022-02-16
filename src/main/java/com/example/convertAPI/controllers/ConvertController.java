@@ -1,6 +1,5 @@
 package com.example.convertAPI.controllers;
 
-import com.example.convertAPI.model.entity.FinalFileEntity;
 import com.example.convertAPI.model.services.ConversionService;
 import com.example.convertAPI.model.services.FileEntitiesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.List;
 
 @RestController
 public class ConvertController {
@@ -44,13 +42,10 @@ public class ConvertController {
 
         String contentType = Files.probeContentType(convertedFile.toPath());
 
-        List<String> a;
-
-
         return ResponseEntity.ok()
                 .contentLength(convertedFile.length())
                 .headers(headers)
-                .contentType(MediaType.parseMediaType(contentType))
+                .contentType(MediaType.parseMediaType(contentType == null ? "application/octet-stream" : contentType))
                 .body(resource);
     }
 

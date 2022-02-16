@@ -10,20 +10,29 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ConversionService {
-    private final HashMap<String, Convertor> convertors = new HashMap<>();
+    private final HashMap<Set<String>, Convertor> convertors = new HashMap<>();
 
     {
-        convertors.put("pdf", new ConvertorPDF());
+        convertors.put(new HashSet<>(List.of("pdf")), new ConvertorPDF());
     }
 
     public File convert(File initialFile, String initialFormat, String finalFormat) {
-        Convertor convertor = Optional.ofNullable(convertors.get(initialFormat)).orElseThrow(() -> new InvalidFormatException("initial"));
+        Convertor convertor = Optional.ofNullable(getConvertor(initialFormat)).orElseThrow(() -> new InvalidFormatException("initial"));
 
         return convertor.convertTo(initialFile, finalFormat);
     }
+
+    private Convertor getConvertor(String initialFormat) {
+        for (Set<String> set : convertors.keySet()) {
+            if (set.contains(initialFormat)) return convertors.get(set);
+        }
+
+        return null;
+    }
+
+
 }
