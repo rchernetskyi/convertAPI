@@ -1,7 +1,8 @@
 package com.example.convertAPI.controllers;
 
+import com.example.convertAPI.model.entity.FinalFileEntity;
 import com.example.convertAPI.model.services.ConversionService;
-import com.example.convertAPI.model.services.UserRequestService;
+import com.example.convertAPI.model.services.FileEntitiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.file.Files;
+import java.util.List;
 
 @RestController
 public class ConvertController {
@@ -23,7 +25,7 @@ public class ConvertController {
     private ConversionService conversionService;
 
     @Autowired
-    private UserRequestService userRequestService;
+    private FileEntitiesService fileEntitiesService;
 
     @PostMapping("/convert")
     public ResponseEntity<Resource> convert(@RequestParam("file") MultipartFile multipartFile
@@ -33,7 +35,7 @@ public class ConvertController {
 
         File convertedFile = conversionService.convert(initialFile, initialFormat, finalFormat);
 
-        userRequestService.addUserRequest(initialFile, convertedFile, initialFormat, finalFormat, request);
+        fileEntitiesService.addFiles(initialFile, initialFormat, convertedFile, finalFormat);
 
         InputStreamResource resource = new InputStreamResource(new FileInputStream(convertedFile));
 
@@ -41,6 +43,9 @@ public class ConvertController {
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + convertedFile.getName());
 
         String contentType = Files.probeContentType(convertedFile.toPath());
+
+        List<String> a;
+
 
         return ResponseEntity.ok()
                 .contentLength(convertedFile.length())
