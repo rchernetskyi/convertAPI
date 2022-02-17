@@ -2,12 +2,14 @@ package com.example.convertAPI.controllers;
 
 import com.example.convertAPI.model.services.ConversionService;
 import com.example.convertAPI.model.services.FileEntitiesService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +49,13 @@ public class ConvertController {
                 .headers(headers)
                 .contentType(MediaType.parseMediaType(contentType == null ? "application/octet-stream" : contentType))
                 .body(resource);
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<String> info() throws IOException {
+        File infoFile = new File("C:\\Users\\romac\\Desktop\\Лаби\\convertAPI\\src\\main\\resources\\info.txt");
+
+        return ResponseEntity.ok(FileUtils.readFileToString(infoFile, "utf-8"));
     }
 
     private File saveMultipartFile(MultipartFile multipartFile) throws IOException {

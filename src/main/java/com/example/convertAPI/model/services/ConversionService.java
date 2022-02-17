@@ -2,14 +2,11 @@ package com.example.convertAPI.model.services;
 
 import com.example.convertAPI.model.entity.convertors.Convertor;
 import com.example.convertAPI.model.entity.convertors.ConvertorPDF;
+import com.example.convertAPI.model.entity.convertors.ConvertorWord;
 import com.example.convertAPI.model.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.*;
 
 @Service
@@ -18,6 +15,7 @@ public class ConversionService {
 
     {
         convertors.put(new HashSet<>(List.of("pdf")), new ConvertorPDF());
+        convertors.put(new HashSet<>(List.of("docx", "doc")), new ConvertorWord());
     }
 
     public File convert(File initialFile, String initialFormat, String finalFormat) {

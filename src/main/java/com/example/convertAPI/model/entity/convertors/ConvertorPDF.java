@@ -1,7 +1,6 @@
 package com.example.convertAPI.model.entity.convertors;
 
 import com.aspose.pdf.Document;
-import com.aspose.pdf.SaveFormat;
 import com.example.convertAPI.model.exceptions.InvalidFormatException;
 
 import java.io.File;
@@ -22,7 +21,6 @@ public class ConvertorPDF implements Convertor {
         formats.put("docx", 6);
         formats.put("svg", 7);
         formats.put("mobixml", 8);
-        formats.put("excel", 9);
         formats.put("epub", 10);
         formats.put("pptx", 14);
     }

@@ -1,0 +1,2 @@
+pdf ==> doc, xps, html, xml, tex, docx, svg, mobixml, epub, pptx
+doc, docx ==> pdf, xps, htmlfixed, epub, doc, docx, png
